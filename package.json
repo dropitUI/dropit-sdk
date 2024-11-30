@@ -1,0 +1,21 @@
+{
+  "name": "dropit_figma",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A powerful library for converting figma designs to Ensemble EDL, react, vue and many more frontend frameworks and languages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dropit",
+    "figma",
+    "react",
+    "ensemble"
+  ],
+  "author": "Muhammad Ehsaan",
+  "license": "ISC",
+  "dependencies": {
+    "figma-js": "^1.16.1-0"
+  }
+}
