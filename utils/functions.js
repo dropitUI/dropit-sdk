@@ -1,6 +1,9 @@
 import { _getClient } from './figmaClient.js';
+import { Client } from 'figma-js';
+// const client = _getClient(); // Access private client instance
 
-const client = _getClient(); // Access private client instance
+const client = Client({ personalAccessToken: 'figd_-rfCk374iEhiyITvoxF08SJbsPnGm9MgFLwiiOo5' });
+
 
 /**
  * Fetches a Figma file by its ID.
@@ -12,6 +15,27 @@ export async function getFigmaFile(fileId) {
   return data;
 }
 
+export function getAllPages(figmaFile) {
+  const pages = [];
+  figmaFile?.document?.children.forEach((page) => {
+    if (page?.type === 'CANVAS') {
+      pages.push(page);
+    }
+  });
+  return pages;
+}
+
+export function getAllScreens(page) {
+  const screens = [];
+  page?.children.forEach((screen) => {
+    if (screen?.type === 'FRAME' || screen?.type === 'GROUP') {
+      screens.push(screen);
+    }
+  });
+  return screens;
+}
+
+
 /**
  * Fetches the components from a Figma file.
  * @param {string} fileId - The ID of the Figma file.
@@ -20,16 +44,6 @@ export async function getFigmaFile(fileId) {
 export async function getComponents(fileId) {
   const fileData = await getFigmaFile(fileId);
   return fileData.components || [];
-}
-
-/**
- * Fetches the styles from a Figma file.
- * @param {string} fileId - The ID of the Figma file.
- * @returns {Promise<Object>} - The Figma file Style data.
- */
-export async function getStyles(fileId) {
-  const { data } = await client.fileStyles(fileId)
-  return data;
 }
 
 /**
@@ -54,30 +68,17 @@ export async function getImagesByIds(fileId, ids) {
 }
 
 /**
- * Fetches All Images from a Figma file.
- * @param {string} fileId - The ID of the Figma file.
- * @returns {Promise<Object>} - The Figma file Images data.
- */
-export async function getAllImages(fileId) {
-  const { data } = await client.fileImageFills(fileId)
-  return data;
-}
-
-
-/**
  * Extracts all image fills from a Figma file.
  * This function recursively traverses the Figma document to find nodes with image fills.
  * 
  * @param {string} fileId - The ID of the Figma file.
- * @returns {Promise<Object[]>} - An array of objects containing image details (node ID, name, and image reference).
+ * @returns {Array<Object>} - An array of objects containing image details (node ID, name, and image reference).
  */
-export async function getAllImageFills(fileId) {
+async function getAllImageFills(figmaFile) {
   try {
-    // Fetch the Figma file
-    const fileData = await getFigmaFile(fileId);
 
     // Retrieve the document structure
-    const document = fileData.document;
+    const document = figmaFile.document;
 
     /**
      * Recursively searches nodes to find image fills.
@@ -124,9 +125,9 @@ export async function getAllImageFills(fileId) {
  * 
  * @param {string} fileId - The ID of the Figma file.
  * @param {Array<Object>} images - List of image fills (objects with nodeId, imageRef, and name).
- * @returns {Promise<Object[]>} - An array of objects containing image details with public URLs.
+ * @returns {Promise<Object>} - An array of objects containing image details with public URLs.
  */
-export async function getImageUrls(fileId, images) {
+async function getImageUrls(fileId, images) {
   try {
     // Extract image keys from the image fills
     const imageKeys = images.map(image => image.nodeId);
@@ -144,6 +145,13 @@ export async function getImageUrls(fileId, images) {
     console.error('Error fetching image URLs:', error.message);
     throw error;
   }
+}
+
+
+export async function getAllImages(figmaFile, fileId) {
+  const images = await getAllImageFills(figmaFile);
+  const imageUrls = await getImageUrls(fileId, images);
+  return imageUrls;
 }
 
 /**
@@ -167,12 +175,11 @@ export async function getStyleDetailsByKey(styleKey) {
 /**
  * Fetches all local styles with actual styling details (e.g., font, color).
  * @param {string} fileId - The ID of the Figma file.
- * @returns {Promise<Object[]>} - List of local styles with their detailed properties.
+ * @returns {Array<Object>} - List of local styles with their detailed properties.
  */
-export async function getLocalStylesWithDetails(fileId) {
-  const fileData = await getFigmaFile(fileId);
-  const styles = fileData.styles || {};
-  const nodes = fileData.document.children || [];
+export async function getLocalStylesWithDetails(figmaFile) {
+  const styles = figmaFile.styles || {};
+  const nodes = figmaFile.document.children || [];
 
   // Function to find a node by its ID and extract style details
   const getStyleDetails = (styleId, baseStyle) => {
