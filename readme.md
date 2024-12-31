@@ -20,7 +20,6 @@ DropIT is an NPM package designed to simplify interaction with the Figma API. It
   - [Installation](#installation)
     - [Using npm](#using-npm)
     - [Using yarn](#using-yarn)
-    - [Local Installation (if you haven't published the package yet)](#local-installation-if-you-havent-published-the-package-yet)
   - [Setup](#setup)
   - [Function: `getApp`](#function-getapp)
     - [Parameters](#parameters)
@@ -44,55 +43,6 @@ npm install dropit-figma
 ```bash
 yarn add dropit-figma
 ```
-
-### Local Installation (if you haven't published the package yet)
-
-1. Clone the repository to your local machine:
-
-```bash
-git clone https://github.com/your-username/dropit-figma.git
-```
-
-2. Navigate to the project directory:
-
-```bash
-cd dropit-figma
-```
-
-3. Run npm or yarn to install the dependencies:
-
-```bash
-npm install
-```
-or
-```bash
-yarn install
-```
-
-4. Link the package globally so you can use it in your project:
-
-```bash
-npm link
-```
-or
-```bash
-yarn link
-```
-
-5. In your project, link the local version of the package:
-
-```bash
-npm link dropit-figma
-```
-or
-```bash
-yarn link dropit-figma
-```
-
-Now you can use the package in your project even before it's published.
-
----
-
 ## Setup
 
 Before using DropIT, obtain a **Figma Personal Access Token** by following these steps:

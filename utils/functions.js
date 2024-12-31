@@ -1,8 +1,5 @@
 import { _getClient } from './figmaClient.js';
-import { Client } from 'figma-js';
-// const client = _getClient(); // Access private client instance
 
-const client = Client({ personalAccessToken: 'figd_-rfCk374iEhiyITvoxF08SJbsPnGm9MgFLwiiOo5' });
 
 
 /**
@@ -11,7 +8,7 @@ const client = Client({ personalAccessToken: 'figd_-rfCk374iEhiyITvoxF08SJbsPnGm
  * @returns {Promise<Object>} - The Figma file data.
  */
 export async function getFigmaFile(fileId) {
-  const { data } = await client.file(fileId);
+  const { data } = await _getClient().file(fileId);
   return data;
 }
 
@@ -52,7 +49,7 @@ export async function getComponents(fileId) {
  * @returns {Promise<Object>} - The Figma file Style data.
  */
 export async function getStyle(key) {
-  const { data } = await client.style(key)
+  const { data } = await _getClient().style(key)
   return data;
 }
 
@@ -63,7 +60,7 @@ export async function getStyle(key) {
  * @returns {Promise<Object>} - The Figma file Images data.
  */
 export async function getImagesByIds(fileId, ids) {
-  const { data } = await client.fileImages(fileId, { ids: ids })
+  const { data } = await _getClient().fileImages(fileId, { ids: ids })
   return data;
 }
 
@@ -133,7 +130,7 @@ async function getImageUrls(fileId, images) {
     const imageKeys = images.map(image => image.nodeId);
 
     // Fetch public URLs for the image references
-    const { data: imageUrls } = await client.fileImages(fileId, { ids: imageKeys });
+    const { data: imageUrls } = await _getClient().fileImages(fileId, { ids: imageKeys });
 
     // Map the URLs back to the image details
     return images.map((key, index) => ({
@@ -162,7 +159,7 @@ export async function getAllImages(figmaFile, fileId) {
  */
 export async function getStyleDetailsByKey(styleKey) {
   try {
-    const { data } = await client.style(styleKey); // Fetch style details using figma-js
+    const { data } = await _getClient().style(styleKey); // Fetch style details using figma-js
     return data;
   } catch (error) {
     console.error(`Failed to fetch details for style key: ${styleKey}`, error);

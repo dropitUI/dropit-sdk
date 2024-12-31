@@ -21,35 +21,44 @@ import { AppSkeleton } from '../utils/skeletons.js';
 const _getApp = async (figmaFileID) => {
     let app = AppSkeleton;
 
-    // Fetch the Figma file by ID
-    const figmaFile = await getFigmaFile(figmaFileID);
-    if (!figmaFile) {
-        throw new Error("Failed to fetch Figma file. Check the file ID.");
-    }
+    try {
 
-    // Fetch local styles with details
-    const styles =  await getLocalStylesWithDetails(figmaFile)
-    // Fetch all images from the Figma file
-    const images = await getAllImages(figmaFile, figmaFileID);
+        // Fetch the Figma file by ID
+        const figmaFile = await getFigmaFile(figmaFileID);
+        if (!figmaFile) {
+            throw new Error("Failed to fetch Figma file. Check the file ID.");
+        }
 
-    // Extract all pages from the Figma file
-    const pages = getAllPages(figmaFile);
+        // Fetch local styles with details
+        const styles = await getLocalStylesWithDetails(figmaFile)
+        // Fetch all images from the Figma file
+        const images = await getAllImages(figmaFile, figmaFileID);
 
-    // Process each page to extract screens and add them to the App object
-    pages.forEach((page) => {
-        const screens = getAllScreens(page);
-        screens.forEach((screen) => {
-            // Add the screen to the App object
-            app.screens.push(screen);
+        // Extract all pages from the Figma file
+        const pages = getAllPages(figmaFile);
+
+        // Process each page to extract screens and add them to the App object
+        pages.forEach((page) => {
+            const screens = getAllScreens(page);
+            screens.forEach((screen) => {
+                // Add the screen to the App object
+                app.screens.push(screen);
+            });
         });
-    });
 
-    // Add the Figma file name, styles, and images to the App object
-    app.name = figmaFile.name;
-    app.styles = styles;
-    app.images = images;
+        // Add the Figma file name, styles, and images to the App object
+        app.name = figmaFile.name;
+        app.styles = styles;
+        app.images = images;
 
-    return app;
+        return app;
+
+    } catch (error) {
+        console.log(error.response.data.err);
+        return {
+            error: error.response.data.err,
+        }
+    }
 };
 
 export { _getApp };
