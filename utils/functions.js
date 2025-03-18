@@ -124,13 +124,13 @@ async function getAllImageFills(figmaFile) {
  * @param {Array<Object>} images - List of image fills (objects with nodeId, imageRef, and name).
  * @returns {Promise<Object>} - An array of objects containing image details with public URLs.
  */
-async function getImageUrls(fileId, images) {
+async function getImageUrls(fileId, images, format = 'png', scale = 4) {
   try {
     // Extract image keys from the image fills
     const imageKeys = images.map(image => image.nodeId);
 
     // Fetch public URLs for the image references
-    const { data: imageUrls } = await _getClient().fileImages(fileId, { ids: imageKeys });
+    const { data: imageUrls } = await _getClient().fileImages(fileId, { ids: imageKeys, format, scale });
 
     // Map the URLs back to the image details
     return images.map((key, index) => ({
@@ -145,9 +145,10 @@ async function getImageUrls(fileId, images) {
 }
 
 
-export async function getAllImages(figmaFile, fileId) {
+export async function getAllImages(figmaFile, fileId, properties) {
   const images = await getAllImageFills(figmaFile);
-  const imageUrls = await getImageUrls(fileId, images);
+  console.log(images.length);
+  const imageUrls = await getImageUrls(fileId, images, properties?.imageFormat, properties?.imageScale);
   return imageUrls;
 }
 

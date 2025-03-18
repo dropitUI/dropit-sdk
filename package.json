@@ -4,17 +4,32 @@
   "type": "module",
   "description": "DropIT: A seamless design-to-code solution that integrates with the Figma API to fetch and structure design data, including pages, screens, styles, and images, for streamlined development workflows.",
   "main": "index.js",
+  "module": "index.mjs",
+  "types": "index.d.ts",
+  "exports": {
+    "import": "./index.mjs",
+    "require": "./index.cjs"
+  },
   "scripts": {
+    "build": "babel src --out-dir dist --extensions \".js,.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "dropit",
     "figma",
     "react",
-    "ensemble"
+    "ensemble",
+    "design-to-code"
   ],
   "author": "DropitUI",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dropitUI/dropit-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/dropitUI/dropit-sdk/issues"
+  },
   "dependencies": {
     "figma-js": "^1.16.1-0"
   }
